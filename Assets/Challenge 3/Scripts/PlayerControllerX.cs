@@ -7,7 +7,8 @@ public class PlayerControllerX : MonoBehaviour
     public bool gameOver;
 
     public float floatForce = 65.0f;
-    public float bounceForce = 10.0f;
+    public float bounceForce = 25.0f;
+    private float controlForce = 5.0f;
     private float gravityModifier = 1.5f;
     private float floatLimit = 12.5f;
     private float topBound = 15.0f;
@@ -19,7 +20,7 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
-
+    public Camera mainCamera;
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +45,8 @@ public class PlayerControllerX : MonoBehaviour
         // If player is too high, push down
         if (transform.position.y > topBound)
         {
-            playerRb.AddForce(Vector3.down * floatForce);
+            transform.position = new Vector3(transform.position.x, topBound, transform.position.z);
+            playerRb.AddForce(Vector3.down * controlForce, ForceMode.Impulse);
         }
     }
 
@@ -58,6 +60,7 @@ public class PlayerControllerX : MonoBehaviour
             gameOver = true;
             Debug.Log("Game Over!");
             Destroy(other.gameObject);
+            mainCamera.GetComponent<AudioSource>().Stop();
         } 
 
         // if player collides with money, fireworks
